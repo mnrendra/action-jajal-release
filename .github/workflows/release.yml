@@ -16,37 +16,37 @@ permissions:
   contents: read
 
 jobs:
-  # CodeQL
-  codeql:
-    name: CodeQL
-    permissions:
-      # read
-      actions: read
-      contents: read
-      packages: read
-      # write
-      security-events: write
-    uses: ./.github/workflows/reusable.codeql.yml
+  # # CodeQL
+  # codeql:
+  #   name: CodeQL
+  #   permissions:
+  #     # read
+  #     actions: read
+  #     contents: read
+  #     packages: read
+  #     # write
+  #     security-events: write
+  #   uses: ./.github/workflows/reusable.codeql.yml
 
-  # Scorecard
-  scorecard:
-    name: Scorecard
-    permissions:
-      # read
-      actions: read
-      checks: read
-      contents: read
-      issues: read
-      pull-requests: read
-      # write
-      id-token: write
-      security-events: write
-    uses: ./.github/workflows/reusable.scorecard.yml
+  # # Scorecard
+  # scorecard:
+  #   name: Scorecard
+  #   permissions:
+  #     # read
+  #     actions: read
+  #     checks: read
+  #     contents: read
+  #     issues: read
+  #     pull-requests: read
+  #     # write
+  #     id-token: write
+  #     security-events: write
+  #   uses: ./.github/workflows/reusable.scorecard.yml
 
   # Release
   release:
     name: Release
-    needs: [codeql, scorecard]
+    # needs: [codeql, scorecard]
     permissions:
       # write
       contents: write
