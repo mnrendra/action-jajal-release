@@ -23,9 +23,9 @@ const plugins = [
   }],
   '@semantic-release/release-notes-generator',
   ['@semantic-release/exec', {
-    prepareCmd: 'echo "prepare: ${nextRelease.version}"',
-    publishCmd: 'echo "publish: ${nextRelease.version}"',
-    successCmd: 'echo "success: ${nextRelease.version}"'
+    prepareCmd: 'echo "prepare: ${nextRelease.version} && git tag --list && git rev-parse HEAD"',
+    publishCmd: 'echo "publish: ${nextRelease.version} && git tag --list && git rev-parse HEAD"',
+    successCmd: 'echo "success: ${nextRelease.version} && git tag --list && git rev-parse HEAD"'
   }]
 ]
 
