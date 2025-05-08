@@ -17,7 +17,7 @@ const job = async () => {
 
     setOutput('kucrit-pre', name)
   } catch (err) {
-    setFailed('rusak dari pre')
+    setFailed(err)
   }
 }
 
