@@ -1,6 +1,6 @@
 {
   "name": "@mnrendra/action-jajal-release",
-  "version": "1.12.0",
+  "version": "1.20.0",
   "scripts": {
     "build:source": "rm -rf ./build && npx rollup -c",
     "build:pre": "npx ncc build build/pre.js -o dist/pre -m -d",
