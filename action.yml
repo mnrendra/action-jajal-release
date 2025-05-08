@@ -5,7 +5,7 @@ description: Jajal release.
 author: Muhammad Rendra
 
 branding:
-  icon: coffee
+  icon: at-sign
   color: purple
 
 inputs:
