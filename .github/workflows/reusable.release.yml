@@ -3,12 +3,12 @@ name: Release
 on:
   workflow_call:
     secrets:
-      GPG_PRIVATE_KEY:
-        required: true
-      NPM_TOKEN:
-        required: true
-      PASSPHRASE:
-        required: true
+      # GPG_PRIVATE_KEY:
+      #   required: true
+      # NPM_TOKEN:
+      #   required: true
+      # PASSPHRASE:
+      #   required: true
       TOKEN:
         required: true
 
