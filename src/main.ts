@@ -13,6 +13,12 @@ const job = async (): Promise<void> => {
 
   console.log('jajal-main-cwd:', cwd())
 
+  const ghVersion = await nia('gh --version')
+  console.log('jajal-main-gh-version:', ghVersion)
+
+  const gitVersion = await nia('git --version')
+  console.log('jajal-main-git-version:', gitVersion)
+
   setOutput('kucrit-main', name)
 }
 
