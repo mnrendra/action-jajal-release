@@ -6,20 +6,22 @@ const cmd = async (
   const promise = new Promise<string>((resolve, reject) => {
     try {
       exec(cli, (error, stdout, stderr) => {
-        if (error !== null) {
-          reject(error.message)
+        /* eslint-disable-next-line */
+        if (error) {
+          reject(error)
           return
         }
 
-        if (typeof stderr === 'string') {
+        /* eslint-disable-next-line */
+        if (stderr) {
           reject(stderr)
           return
         }
 
         resolve(stdout)
       })
-    } catch (err) {
-      reject(err)
+    } catch (error) {
+      reject(error)
     }
   })
 
