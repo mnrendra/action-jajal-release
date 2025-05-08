@@ -82,7 +82,7 @@ jobs:
 
       # Echo Next Release Version
       - name: Echo Next Release Version
-        run: . ~/.profile && echo $NEXT_RELEASE_VERSION
+        run: . $HOME/.profile && echo $NEXT_RELEASE_VERSION
 
       # Rebase Development Branch
       - name: Rebase Development Branch
