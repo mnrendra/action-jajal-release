@@ -52,7 +52,7 @@ bower_components
 build/Release
 
 # Dependency directories
-# node_modules/
+node_modules/
 jspm_packages/
 
 # Snowpack dependency directory (https://snowpack.dev/)
@@ -82,10 +82,6 @@ web_modules/
 # Output of 'npm pack'
 *.tgz
 *.tgz.*
-*.zip
-*.zip.*
-*.tar
-*.tar.*
 package
 
 # Yarn Integrity file
@@ -106,9 +102,8 @@ package
 .next
 out
 
-# Nuxt.js build / generate output
+# Nuxt.js build
 .nuxt
-# dist
 
 # Gatsby files
 .cache/
@@ -147,3 +142,8 @@ out
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Rollup
+bin
+build
+dist
