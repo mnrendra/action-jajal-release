@@ -1,0 +1,25 @@
+name: Jajal Release
+
+description: Jajal release.
+
+author: Muhammad Rendra
+
+branding:
+  icon: coffee
+  color: purple
+
+inputs:
+  name:
+    description: Name
+    required: false
+    default: Rendra
+
+outputs:
+  email:
+    description: Email
+
+runs:
+  using: node22
+  pre: ./pre.js
+  main: ./main.js
+  post: ./post.js

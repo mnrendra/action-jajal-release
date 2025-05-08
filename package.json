@@ -1,0 +1,7 @@
+{
+  "name": "@mnrendr/action-jajal-release",
+  "version": "1.0.0",
+  "dependencies": {
+    "@actions/core": "^1.11.1"
+  }
+}
