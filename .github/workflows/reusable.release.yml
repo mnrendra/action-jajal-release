@@ -64,13 +64,20 @@ jobs:
       - name: Build Source Code
         run: npm run build
 
-      # Echo Current Source
-      - name: Echo Current Source
-        run: echo $0
+      # Echo Helpers
+      - name: Echo Helpers
+        run: |
+          echo $0
+          printenv
+          cat ~/.profile
 
       # Release and Publish to NPM
       - name: Release and Publish to NPM
         run: npx semantic-release -e ./.github/workflows/helpers/release/release.config.mjs
+      
+      # Echo Bagong
+      - name: Echo Bagong
+        run: echo $BAGONG
 
       # # Echo Next Release Version
       # - name: Echo Next Release Version
