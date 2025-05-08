@@ -7,8 +7,8 @@ const job = async () => {
     const name = getInput('name')
     console.log('jajal-pre:', name)
 
-    const branch = await cmd('git branch -a')
-    console.log('jajal-pre-branch:', branch)
+    // const branch = await cmd('git branch -a')
+    // console.log('jajal-pre-branch:', branch)
 
     const ls = await cmd('ls -laihs')
     console.log('jajal-pre-ls:', ls)
