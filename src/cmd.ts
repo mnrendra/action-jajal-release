@@ -1,6 +1,6 @@
 import { exec } from 'node:child_process'
 
-const cmd = async (
+const nia = async (
   cli: string
 ): Promise<string> => {
   const promise = new Promise<string>((resolve, reject) => {
@@ -28,4 +28,4 @@ const cmd = async (
   return await promise
 }
 
-export default cmd
+export default nia
