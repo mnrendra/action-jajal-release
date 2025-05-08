@@ -1,19 +1,24 @@
+const { cwd } = require('node:process')
 const { getInput, setFailed, setOutput } = require('@actions/core')
 const cmd = require('./cmd')
 
-try {
-  const name = getInput('name')
-  console.log('jajal-main:', name)
+const job = async () => {
+  try {
+    const name = getInput('name')
+    console.log('jajal-main:', name)
 
-  const branch = cmd('git branch -a')
-  console.log('jajal-main-branch:', branch)
+    const branch = await cmd('git branch -a')
+    console.log('jajal-main-branch:', branch)
 
-  const ls = cmd('ls -laihs')
-  console.log('jajal-main-ls:', ls)
+    const ls = await cmd('ls -laihs')
+    console.log('jajal-main-ls:', ls)
 
-  console.log('jajal-main-cwd:', process.cwd())
+    console.log('jajal-main-cwd:', cwd())
 
-  setOutput('kucrit-main', name)
-} catch (err) {
-  setFailed('rusak dari main')
+    setOutput('kucrit-main', name)
+  } catch (err) {
+    setFailed('rusak dari main')
+  }
 }
+
+job()
