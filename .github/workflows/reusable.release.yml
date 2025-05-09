@@ -87,9 +87,6 @@ jobs:
           git tag -d $TAG
           git push -d origin tag $TAG
 
-          git commit -S -m 'release: $TAG'
-          git push origin main
-
           rm ./.gitignore
           echo ".github/" >> ./.gitignore
           echo "dist/" >> ./.gitignore
