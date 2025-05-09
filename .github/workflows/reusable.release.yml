@@ -84,6 +84,7 @@ jobs:
           git add action.yml
           git commit -S -m "release: $TAG"
           git push origin main
+          LATEST_COMMIT_HASH=$(git rev-parse HEAD);
 
           rm ./.gitignore
           echo ".github/" >> ./.gitignore
@@ -121,7 +122,7 @@ jobs:
           git add --force README.md
 
           git commit -S -m "publish: $TAG"
-          git tag -s $TAG -m "release: $TAG"
+          git tag -s $TAG LATEST_COMMIT_HASH -m "release: $TAG"
           git push origin $TAG
 
       # Rebase Development Branch
