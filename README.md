@@ -1,3 +1,3 @@
 # @mnrendr/action-jajal-release
 
-Jajal release tujuh.
+Jajal release v8.0.0.
