@@ -90,7 +90,7 @@ jobs:
 
           sed -i -E "s/^version:.*/version: $VERSION/" action.yml
           git add action.yml
-          git commit -S -m "publish: $TAG"
+          git commit -S -m "release: $TAG"
           git push origin main
 
           rm ./.gitignore
