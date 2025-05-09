@@ -23,7 +23,7 @@ const plugins = [
   }],
   '@semantic-release/release-notes-generator',
   ['@semantic-release/exec', {
-    successCmd: 'echo "export NEXT_RELEASE_VERSION=\"${nextRelease.version}\"" >> $HOME/.profile && ${console.log(require("./.github/workflows/helpers/release/hello.js")("nia"))}'
+    successCmd: 'echo "export NEXT_RELEASE_VERSION=\"${nextRelease.version}\"" >> $HOME/.profile && ${console.log("halo, nia!")}'
   }]
 ]
 
