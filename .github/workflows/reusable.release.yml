@@ -80,20 +80,14 @@ jobs:
           git tag -d $TAG
           git push -d origin tag $TAG
 
-          sed -i -E "s/^version:.*/version: $VERSION/" action.yml
-          git add action.yml
-          git commit -S -m "release: $TAG"
-          git push origin main
-          LATEST_COMMIT_HASH=$(git rev-parse HEAD);
-
-          rm ./.gitignore
+          mv ./.gitignore ./.gitignore.backup
           echo ".github/" >> ./.gitignore
           echo "build/" >> ./.gitignore
           echo "node_modules/" >> ./.gitignore
           echo "src/" >> ./.gitignore
           echo ".czrc*" >> ./.gitignore
           echo ".eslintrc*" >> ./.gitignore
-          echo ".gitignore" >> ./.gitignore
+          echo ".gitignore*" >> ./.gitignore
           echo ".npmignore" >> ./.gitignore
           echo ".npmrc" >> ./.gitignore
           echo ".pre-commit-config*" >> ./.gitignore
@@ -107,7 +101,7 @@ jobs:
           git rm --cached --ignore-unmatch -r src/
           git rm --cached --ignore-unmatch .czrc*
           git rm --cached --ignore-unmatch .eslintrc*
-          git rm --cached --ignore-unmatch .gitignore
+          git rm --cached --ignore-unmatch .gitignore*
           git rm --cached --ignore-unmatch .npmignore
           git rm --cached --ignore-unmatch .npmrc
           git rm --cached --ignore-unmatch .pre-commit-config*
@@ -115,15 +109,28 @@ jobs:
           git rm --cached --ignore-unmatch rollup.config*
           git rm --cached --ignore-unmatch tsconfig*
 
+          sed -i -E "s/^version:.*/version: $VERSION/" action.yml
+
           git add .
           git add --force dist
           git add --force action.yml
           git add --force CODE_OF_CONDUCT.md
           git add --force README.md
 
-          git commit -S -m "publish: $TAG"
-          git tag -s $TAG $LATEST_COMMIT_HASH -m "release: $TAG"
+          git commit -S -m "dist: $TAG"
+          git tag -s $TAG -m "release: $TAG"
+          git push origin main
           git push origin $TAG
+
+          rm -f ./.gitignore
+          mv ./.gitignore.backup ./.gitignore
+
+          git rm --cached --ignore-unmatch -r dist/
+
+          git add .
+
+          git commit -S -m "release: $TAG"
+          git push origin main
 
       # Rebase Development Branch
       - name: Rebase Development Branch
