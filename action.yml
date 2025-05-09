@@ -1,5 +1,7 @@
 name: Action Jajal Release
 
+version: 1.21.0
+
 description: Jajal release action.
 
 author: Muhammad Rendra

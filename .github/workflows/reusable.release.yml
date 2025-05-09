@@ -82,10 +82,16 @@ jobs:
       - name: Echo Next Release Version
         run: |
           . $HOME/.profile
-          TAG=v$NEXT_RELEASE_VERSION
+          VERSION=$NEXT_RELEASE_VERSION
+          TAG=v$VERSION
 
           git tag -d $TAG
           git push -d origin tag $TAG
+
+          sed -i -E "s/^version:.*/version: $VERSION/" action.yml
+          git add action.yml
+          git commit -S -m "publish: $TAG"
+          git push origin main
 
           rm ./.gitignore
           echo ".github/" >> ./.gitignore
@@ -122,8 +128,8 @@ jobs:
           git add --force CODE_OF_CONDUCT.md
           git add --force README.md
 
-          git commit -S -m 'publish: $TAG'
-          git tag -s $TAG -m 'release: $TAG'
+          git commit -S -m "publish: $TAG"
+          git tag -s $TAG -m "release: $TAG"
           git push origin $TAG
 
       # Rebase Development Branch
