@@ -1,3 +1,3 @@
 # @mnrendr/action-jajal-release
 
-Jajal release deh.
+Jajal release tujuh.
