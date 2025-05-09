@@ -62,21 +62,13 @@ jobs:
       - name: Build Source Code
         run: npm run build
 
+      # List tags
+      - name: List tags
+        run: git tag --list
+
       # Release and Publish to NPM
       - name: Release and Publish to NPM
         run: npx semantic-release -e ./.github/workflows/helpers/release/release.config.mjs
-
-      # # Echo Helpers
-      # - name: Echo Helpers
-      #   run: |
-      #     echo $0
-      #     printenv
-      #     cat ~/.profile
-      #     cat ~/.bashrc
-
-      # # Echo Bagong
-      # - name: Echo Bagong
-      #   run: echo $BAGONG
 
       # Echo Next Release Version
       - name: Echo Next Release Version
