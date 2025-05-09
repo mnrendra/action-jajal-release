@@ -23,7 +23,7 @@ const plugins = [
   }],
   '@semantic-release/release-notes-generator',
   ['@semantic-release/exec', {
-    successCmd: 'echo "export NEXT_RELEASE_VERSION=\"${nextRelease.version}\"" | perl -pe "s/([^a-zA-Z0-9])/\\$1/g" >> $HOME/.profile && echo "export NEXT_RELEASE_NOTES=\"${nextRelease.notes}\"" | perl -pe "s/([^a-zA-Z0-9])/\\$1/g" >> $HOME/.profile'
+    successCmd: 'echo "export NEXT_RELEASE_VERSION=\"${nextRelease.version}\"" >> $HOME/.profile'
   }]
 ]
 

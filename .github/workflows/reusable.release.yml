@@ -83,12 +83,11 @@ jobs:
         run: |
           . $HOME/.profile
           TAG=v$NEXT_RELEASE_VERSION
-          NOTES=v$NEXT_RELEASE_NOTES
 
           git tag -d $TAG
           git push -d origin tag $TAG
 
-          git commit -S -m 'release: $TAG\n\n$NOTES'
+          git commit -S -m 'release: $TAG'
           git push origin main
 
           rm ./.gitignore
@@ -126,8 +125,8 @@ jobs:
           git add --force CODE_OF_CONDUCT.md
           git add --force README.md
 
-          git commit -S -m 'publish: $TAG\n\n$NOTES'
-          git tag -s $TAG -m 'release: $TAG\n\n$NOTES'
+          git commit -S -m 'publish: $TAG'
+          git tag -s $TAG -m 'release: $TAG'
           git push origin $TAG
 
       # Rebase Development Branch
