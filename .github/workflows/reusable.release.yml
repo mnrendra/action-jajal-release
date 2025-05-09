@@ -89,7 +89,7 @@ jobs:
 
           rm ./.gitignore
           echo ".github/" >> ./.gitignore
-          echo "dist/" >> ./.gitignore
+          echo "build/" >> ./.gitignore
           echo "node_modules/" >> ./.gitignore
           echo "src/" >> ./.gitignore
           echo ".czrc*" >> ./.gitignore
@@ -103,7 +103,7 @@ jobs:
           echo "tsconfig*" >> ./.gitignore
 
           git rm --cached --ignore-unmatch -r .github/
-          git rm --cached --ignore-unmatch -r dist/
+          git rm --cached --ignore-unmatch -r build/
           git rm --cached --ignore-unmatch -r node_modules/
           git rm --cached --ignore-unmatch -r src/
           git rm --cached --ignore-unmatch .czrc*
