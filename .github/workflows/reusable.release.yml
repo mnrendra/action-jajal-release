@@ -65,6 +65,10 @@ jobs:
       # Semantic Release
       - name: Semantic Release
         run: npx semantic-release -e ./.github/workflows/helpers/release/release.config.mjs
+      
+      # Relase scripts
+      - name: Relase scripts
+        run: .github/workflows/scripts/main.sh
 
       # # Echo Next Release Version
       # - name: Echo Next Release Version

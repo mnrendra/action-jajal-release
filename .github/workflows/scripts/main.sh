@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+. "${HOME:-"~"}/.profile"
+
 source "$(dirname "$0")/consts.sh"
 source "$(dirname "$0")/parse-ignore.sh"
 source "$(dirname "$0")/backup-gitignore.sh"
@@ -12,9 +14,9 @@ source "$(dirname "$0")/restore-gitignore.sh"
 source "$(dirname "$0")/unstage-ghaignore.sh"
 
 main() {
-  local version="$1"
-  local notes="${2:-""}"
-  local branch="${3:-"$BRANCH"}"
+  local version="$NEXT_RELEASE_VERSION"
+  local notes="$NEXT_RELEASE_NOTES:-""}"
+  local branch="${BRANCH_NAME:-"$BRANCH"}"
   local action_file="${4:-"$ACTION_FILE"}"
   local tag="${5:-"v$version"}"
   local release_message="${6:-"release: "$tag""$'\n\n'"$notes"}"
