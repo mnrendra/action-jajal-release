@@ -23,7 +23,7 @@ const plugins = [
   }],
   '@semantic-release/release-notes-generator',
   ['@semantic-release/exec', {
-    successCmd: 'echo \"export NEXT_RELEASE_VERSION=\"${nextRelease.version}\"\" >> $HOME/.profile && echo \"export NEXT_RELEASE_NOTES=\"${nextRelease.notes}\"\" >> $HOME/.profile && echo \"export BRANCH_NAME=\"${branch.name}\"\" >> $HOME/.profile'
+    successCmd: 'echo \"export NEXT_RELEASE_VERSION=\"${nextRelease.version}\"\" >> $HOME/.profile && echo \"export BRANCH_NAME=\"${branch.name}\"\" >> $HOME/.profile'
   }]
 ]
 
