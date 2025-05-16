@@ -14,6 +14,8 @@ source "$(dirname "$0")/restore-gitignore.sh"
 source "$(dirname "$0")/unstage-ghaignore.sh"
 
 main() {
+  echo "start: main"
+
   local version="$NEXT_RELEASE_VERSION"
   local notes="$NEXT_RELEASE_NOTES:-""}"
   local branch="${BRANCH_NAME:-"$BRANCH"}"
@@ -46,4 +48,6 @@ main() {
 
     push "$branch" "$latest_message"
   fi
+
+  echo "end: main"
 }

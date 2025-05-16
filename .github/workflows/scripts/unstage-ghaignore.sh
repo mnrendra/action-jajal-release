@@ -5,6 +5,8 @@ source "$(dirname "$0")/consts.sh"
 source "$(dirname "$0")/recursive.sh"
 
 unstage_ghaignore() {
+  echo "start: unstage_ghaignore"
+
   local parsed_git_ignore="$1"
   local parsed_gha_ignore="$2"
 
@@ -22,4 +24,6 @@ unstage_ghaignore() {
       git rm --cached --ignore-unmatch "$recursive_flag" -- "$target" || true
     fi
   done
+
+  echo "end: unstage_ghaignore"
 }

@@ -4,6 +4,8 @@ set -euo pipefail
 source "$(dirname "$0")/consts.sh"
 
 git_add() {
+  echo "start: git_add"
+
   local first_ignore="$1"
   local second_ignore="$2"
 
@@ -22,4 +24,6 @@ git_add() {
       git add --force -- "$target"
     fi
   done
+
+  echo "end: git_add"
 }

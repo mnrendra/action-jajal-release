@@ -2,6 +2,8 @@
 set -euo pipefail
 
 push() {
+  echo "start: push"
+
   local branch="$1"
   local message="$2"
   local tag="${3:-""}"
@@ -16,4 +18,6 @@ push() {
     git tag -s "$tag" -m "$message"
     git push origin "$tag"
   fi
+
+  echo "end: push"
 }

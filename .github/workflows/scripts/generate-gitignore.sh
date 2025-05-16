@@ -5,6 +5,8 @@ source "$(dirname "$0")/consts.sh"
 source "$(dirname "$0")/recursive.sh"
 
 generate_gitignore() {
+  echo "start: generate_gitignore"
+
   local parsed_gha_ignore="$1"
 
   local line target recursive_flag
@@ -18,4 +20,6 @@ generate_gitignore() {
     recursive_flag="$(recursive "$target")"
     git rm --cached --ignore-unmatch "$recursive_flag" -- "$target" || true
   done
+
+  echo "end: generate_gitignore"
 }
