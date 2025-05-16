@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-. "${HOME:-"~"}/.profile"
+. $HOME/.profile
 
 source "$(dirname "$0")/consts.sh"
 source "$(dirname "$0")/parse-ignore.sh"

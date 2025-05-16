@@ -1,8 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-source "$(dirname "$0")/consts.sh"
-
 git_add() {
   echo "start: git_add"
 
