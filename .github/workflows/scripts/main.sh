@@ -51,3 +51,5 @@ main() {
 
   echo "end: main"
 }
+
+main
