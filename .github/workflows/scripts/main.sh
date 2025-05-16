@@ -17,7 +17,8 @@ main() {
   echo "start: main"
 
   local version="$NEXT_RELEASE_VERSION"
-  local notes="$NEXT_RELEASE_NOTES:-""}"
+  # local notes="$NEXT_RELEASE_NOTES:-""}"
+  local notes=""
   local branch="${BRANCH_NAME:-"$BRANCH"}"
   local action_file="${4:-"$ACTION_FILE"}"
   local tag="${5:-"v$version"}"
