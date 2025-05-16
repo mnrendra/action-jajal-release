@@ -62,75 +62,71 @@ jobs:
       - name: Build Source Code
         run: npm run build
 
-      # List tags
-      - name: List tags
-        run: git tag --list
-
-      # Release and Publish to NPM
-      - name: Release and Publish to NPM
+      # Semantic Release
+      - name: Semantic Release
         run: npx semantic-release -e ./.github/workflows/helpers/release/release.config.mjs
 
-      # Echo Next Release Version
-      - name: Echo Next Release Version
-        run: |
-          . $HOME/.profile
-          VERSION=$NEXT_RELEASE_VERSION
-          TAG=v$VERSION
+      # # Echo Next Release Version
+      # - name: Echo Next Release Version
+      #   run: |
+      #     . $HOME/.profile
+      #     VERSION=$NEXT_RELEASE_VERSION
+      #     TAG=v$VERSION
 
-          git tag -d $TAG
-          git push -d origin tag $TAG
+      #     git tag -d $TAG
+      #     git push -d origin tag $TAG
 
-          mv ./.gitignore ./.gitignore.backup
-          echo ".github/" >> ./.gitignore
-          echo "build/" >> ./.gitignore
-          echo "node_modules/" >> ./.gitignore
-          echo "src/" >> ./.gitignore
-          echo ".czrc*" >> ./.gitignore
-          echo ".eslintrc*" >> ./.gitignore
-          echo ".gitignore*" >> ./.gitignore
-          echo ".npmignore" >> ./.gitignore
-          echo ".npmrc" >> ./.gitignore
-          echo ".pre-commit-config*" >> ./.gitignore
-          echo "package*" >> ./.gitignore
-          echo "rollup.config*" >> ./.gitignore
-          echo "tsconfig*" >> ./.gitignore
+      #     mv ./.gitignore ./.gitignore.backup
+      #     echo ".github/" >> ./.gitignore
+      #     echo "build/" >> ./.gitignore
+      #     echo "node_modules/" >> ./.gitignore
+      #     echo "src/" >> ./.gitignore
+      #     echo ".czrc*" >> ./.gitignore
+      #     echo ".eslintrc*" >> ./.gitignore
+      #     echo ".gitignore*" >> ./.gitignore
+      #     echo ".npmignore" >> ./.gitignore
+      #     echo ".npmrc" >> ./.gitignore
+      #     echo ".pre-commit-config*" >> ./.gitignore
+      #     echo "package*" >> ./.gitignore
+      #     echo "rollup.config*" >> ./.gitignore
+      #     echo "tsconfig*" >> ./.gitignore
 
-          git rm --cached --ignore-unmatch -r .github/
-          git rm --cached --ignore-unmatch -r build/
-          git rm --cached --ignore-unmatch -r node_modules/
-          git rm --cached --ignore-unmatch -r src/
-          git rm --cached --ignore-unmatch .czrc*
-          git rm --cached --ignore-unmatch .eslintrc*
-          git rm --cached --ignore-unmatch .gitignore*
-          git rm --cached --ignore-unmatch .npmignore
-          git rm --cached --ignore-unmatch .npmrc
-          git rm --cached --ignore-unmatch .pre-commit-config*
-          git rm --cached --ignore-unmatch package*
-          git rm --cached --ignore-unmatch rollup.config*
-          git rm --cached --ignore-unmatch tsconfig*
+      #     git rm --cached --ignore-unmatch -r .github/
+      #     git rm --cached --ignore-unmatch -r build/
+      #     git rm --cached --ignore-unmatch -r node_modules/
+      #     git rm --cached --ignore-unmatch -r src/
+      #     git rm --cached --ignore-unmatch .czrc*
+      #     git rm --cached --ignore-unmatch .eslintrc*
+      #     git rm --cached --ignore-unmatch .gitignore*
+      #     git rm --cached --ignore-unmatch .npmignore
+      #     git rm --cached --ignore-unmatch .npmrc
+      #     git rm --cached --ignore-unmatch .pre-commit-config*
+      #     git rm --cached --ignore-unmatch package*
+      #     git rm --cached --ignore-unmatch rollup.config*
+      #     git rm --cached --ignore-unmatch tsconfig*
 
-          sed -i -E "s/^version:.*/version: $VERSION/" action.yml
+      #     sed -i -E "s/^version:.*/version: $VERSION/" action.yml
 
-          git add .
-          git add --force dist
-          git add --force action.yml
-          git add --force CODE_OF_CONDUCT.md
-          git add --force README.md
+      #     git add .
+      #     git add --force dist
+      #     git add --force action.yml
+      #     git add --force CODE_OF_CONDUCT.md
+      #     git add --force README.md
 
-          git commit -S -m "dist: $TAG"
-          git tag -s $TAG -m "release: $TAG"
-          git push origin main
-          git push origin $TAG
+      #     git commit -S -m "dist: $TAG"
+      #     git tag -s $TAG -m "release: $TAG"
+      #     git push origin main
+      #     git push origin $TAG
 
-          rm -f ./.gitignore
-          mv ./.gitignore.backup ./.gitignore
+      #     rm -f ./.gitignore
+      #     mv ./.gitignore.backup ./.gitignore
 
-          git rm --cached --ignore-unmatch -r dist/
+      #     git rm --cached --ignore-unmatch -r dist/
 
-          git add .
+      #     git add .
 
-          git commit -S -m "release: $TAG"
-          git push origin main
+      #     git commit -S -m "release: $TAG"
+      #     git push origin main
 
       # Rebase Development Branch
       - name: Rebase Development Branch
