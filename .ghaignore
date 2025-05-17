@@ -14,7 +14,6 @@ src/
 .npmignore
 .npmrc
 .pre-commit-config*
-CODE_OF_CONDUCT*
 package*
 rollup.config*
 tsconfig*
