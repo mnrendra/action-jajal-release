@@ -1,0 +1,154 @@
+name: Release
+
+on:
+  workflow_call:
+    secrets:
+      GPG_PRIVATE_KEY:
+        required: true
+      PASSPHRASE:
+        required: true
+      TOKEN:
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  # Release
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    permissions:
+      # write
+      contents: write
+      id-token: write
+      issues: write
+      pull-requests: write
+    steps:
+      # Harden Runner
+      - name: Harden Runner # Audit all outbound calls
+        uses: step-security/harden-runner@0634a2670c59f64b4a01f0f96f84700a4088b9f0 # v2.12.0
+        with:
+          egress-policy: audit
+
+      # Checkout
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0 # All commits need to be analyzed
+          token: ${{ secrets.TOKEN }}
+
+      # Import GPG
+      - name: Import GPG
+        uses: crazy-max/ghaction-import-gpg@e89d40939c28e39f97cf32126055eeae86ba74ec # v6.3.0
+        with:
+          git_user_signingkey: true
+          git_committer_name: ${{ vars.GIT_COMMITTER_NAME }}
+          git_committer_email: ${{ vars.GIT_COMMITTER_EMAIL }}
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+
+      # Setup Node
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: lts/*
+
+      # Clean Install
+      - name: Clean Install
+        run: npm ci
+
+      # Build Source Code
+      - name: Build Source Code
+        run: npm run build
+
+      # Check Pre Git Env
+      - name: Check Pre Git Env
+        run: |
+          echo "GIT_AUTHOR_NAME:" "$GIT_AUTHOR_NAME"
+          echo "GIT_AUTHOR_EMAIL:" "$GIT_AUTHOR_EMAIL"
+          echo "GIT_COMMITTER_NAME:" "$GIT_COMMITTER_NAME"
+          echo "GIT_COMMITTER_EMAIL:" "$GIT_COMMITTER_EMAIL"
+          git config --list
+
+      # Semantic Release
+      - name: Semantic Release
+        run: npx semantic-release -e ./.github/workflows/helpers/release/release.config.mjs
+
+      # Check Post Git Env
+      - name: Check Post Git Env
+        run: |
+          echo "GIT_AUTHOR_NAME:" "$GIT_AUTHOR_NAME"
+          echo "GIT_AUTHOR_EMAIL:" "$GIT_AUTHOR_EMAIL"
+          echo "GIT_COMMITTER_NAME:" "$GIT_COMMITTER_NAME"
+          echo "GIT_COMMITTER_EMAIL:" "$GIT_COMMITTER_EMAIL"
+          git config --list
+
+      # # Echo Next Release Version
+      # - name: Echo Next Release Version
+      #   run: |
+      #     . $HOME/.profile
+      #     VERSION=$NEXT_RELEASE_VERSION
+      #     TAG=v$VERSION
+
+      #     git tag -d $TAG
+      #     git push -d origin tag $TAG
+
+      #     mv ./.gitignore ./.gitignore.backup
+      #     echo ".github/" >> ./.gitignore
+      #     echo "build/" >> ./.gitignore
+      #     echo "node_modules/" >> ./.gitignore
+      #     echo "src/" >> ./.gitignore
+      #     echo ".czrc*" >> ./.gitignore
+      #     echo ".eslintrc*" >> ./.gitignore
+      #     echo ".gitignore*" >> ./.gitignore
+      #     echo ".npmignore" >> ./.gitignore
+      #     echo ".npmrc" >> ./.gitignore
+      #     echo ".pre-commit-config*" >> ./.gitignore
+      #     echo "package*" >> ./.gitignore
+      #     echo "rollup.config*" >> ./.gitignore
+      #     echo "tsconfig*" >> ./.gitignore
+
+      #     git rm --cached --ignore-unmatch -r .github/
+      #     git rm --cached --ignore-unmatch -r build/
+      #     git rm --cached --ignore-unmatch -r node_modules/
+      #     git rm --cached --ignore-unmatch -r src/
+      #     git rm --cached --ignore-unmatch .czrc*
+      #     git rm --cached --ignore-unmatch .eslintrc*
+      #     git rm --cached --ignore-unmatch .gitignore*
+      #     git rm --cached --ignore-unmatch .npmignore
+      #     git rm --cached --ignore-unmatch .npmrc
+      #     git rm --cached --ignore-unmatch .pre-commit-config*
+      #     git rm --cached --ignore-unmatch package*
+      #     git rm --cached --ignore-unmatch rollup.config*
+      #     git rm --cached --ignore-unmatch tsconfig*
+
+      #     sed -i -E "s/^version:.*/version: $VERSION/" action.yml
+
+      #     git add .
+      #     git add --force dist
+      #     git add --force action.yml
+      #     git add --force CODE_OF_CONDUCT.md
+      #     git add --force README.md
+
+      #     git commit -S -m "dist: $TAG"
+      #     git tag -s $TAG -m "release: $TAG"
+      #     git push origin main
+      #     git push origin $TAG
+
+      #     rm -f ./.gitignore
+      #     mv ./.gitignore.backup ./.gitignore
+
+      #     git rm --cached --ignore-unmatch -r dist/
+
+      #     git add .
+
+      #     git commit -S -m "release: $TAG"
+      #     git push origin main
+
+      # Rebase Development Branch
+      - name: Rebase Development Branch
+        run: |
+          git checkout dev
+          git pull --rebase origin main
+          git push --force origin dev
