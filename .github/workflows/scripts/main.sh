@@ -27,8 +27,8 @@ main() {
   local parsed_git_ignore
 
   if [ -n "${version:-}" ] && [ -n "${branch:-}" ]; then
-    parsed_gha_ignore="$(parse_ignore "$GHA_IGNORE_FILE")"
-    parsed_git_ignore="$(parse_ignore "$GIT_IGNORE_FILE")"
+    parsed_gha_ignore="$(parse_ignore "$GHA_IGNORE_FILE" > /dev/null)"
+    parsed_git_ignore="$(parse_ignore "$GIT_IGNORE_FILE" > /dev/null)"
 
     backup_gitignore
 

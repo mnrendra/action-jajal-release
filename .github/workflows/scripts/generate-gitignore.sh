@@ -11,6 +11,8 @@ generate_gitignore() {
 
   local line target recursive_flag
 
+  echo "susu:" "$parsed_gha_ignore"
+
   local gha_ignores=()
   while IFS= read -r line; do gha_ignores+=("$line"); done < <("$parsed_gha_ignore")
 
