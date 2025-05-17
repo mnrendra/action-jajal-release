@@ -17,5 +17,11 @@ generate_gitignore() {
 
     recursive_flag="$(recursive "$target")"
     git rm --cached --ignore-unmatch "$recursive_flag" -- "$target" || true
+
+    echo "susu:" "$recursive_flag" "$target"
   done
+
+  echo "asu----begin:"
+  cat .gitignore
+  echo "asu----end:"
 }

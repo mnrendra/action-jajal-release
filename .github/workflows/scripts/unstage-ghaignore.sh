@@ -19,7 +19,6 @@ unstage_ghaignore() {
   for target in "${git_ignores[@]}"; do
     if ! printf "%s\n" "${gha_ignores[@]}" | grep -qxF "$target"; then
       recursive_flag="$(recursive "$target")"
-      echo "unstage:" "$recursive_flag" "$target"
       git rm --cached --ignore-unmatch "$recursive_flag" -- "$target" || true
     fi
   done
