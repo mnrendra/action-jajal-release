@@ -24,7 +24,7 @@
     "eslint-plugin-promise": "^6.6.0",
     "rollup": "^4.40.1",
     "rollup-plugin-esbuild": "^6.2.1",
-    "semantic-release": "^24.2.3",
+    "semantic-release": "^24.2.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   }
