@@ -14,13 +14,9 @@ generate_gitignore() {
   for target in "${gha_ignores[@]}"; do
     echo "$target" >> "$GIT_IGNORE_FILE"
 
-    echo "diabaikan-rilis:" "$target"
-
     if [[ "$target" == */ ]]; then
-      echo "cabut-rilis: -r" "$target"
       git rm --cached --ignore-unmatch -r -- "$target" || true
     else
-      echo "cabut-rilis:" "$target"
       git rm --cached --ignore-unmatch -- "$target" || true
     fi
   done

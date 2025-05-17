@@ -6,6 +6,8 @@ push() {
   local message="$2"
   local tag="${3:-""}"
 
+  git config --list
+
   git commit -S --allow-empty -m "$message"
   git push origin "$branch"
 
