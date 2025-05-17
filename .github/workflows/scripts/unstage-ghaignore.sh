@@ -13,10 +13,10 @@ unstage_ghaignore() {
   local git_line gha_line target
 
   local git_ignores=()
-  while IFS= read -r git_line; do git_ignores+=("$git_line"); done < <("$parsed_git_ignore")
+  while IFS= read -r git_line; do git_ignores+=("$git_line"); done <<< "$parsed_git_ignore"
 
   local gha_ignores=()
-  while IFS= read -r gha_line; do gha_ignores+=("$gha_line"); done < <("$parsed_gha_ignore")
+  while IFS= read -r gha_line; do gha_ignores+=("$gha_line"); done <<< "$parsed_gha_ignore"
 
   for target in "${git_ignores[@]}"; do
     if ! printf "%s\n" "${gha_ignores[@]}" | grep -qxF "$target"; then

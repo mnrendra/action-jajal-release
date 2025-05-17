@@ -10,10 +10,10 @@ git_add() {
   local first_line second_line target
 
   local first_ignores=()
-  while IFS= read -r first_line; do first_ignores+=("$first_line"); done < <("$first_ignore")
+  while IFS= read -r first_line; do first_ignores+=("$first_line"); done <<< "$first_ignore"
 
   local second_ignores=()
-  while IFS= read -r second_line; do second_ignores+=("$second_line"); done < <("$second_ignore")
+  while IFS= read -r second_line; do second_ignores+=("$second_line"); done <<< "$second_ignore"
 
   git add .
 
