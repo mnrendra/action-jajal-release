@@ -34,7 +34,7 @@ main() {
 
     update_action_version "$action_file" "$version"
 
-    git_add "$GIT_IGNORE_FILE" "$GHA_IGNORE_FILE"
+    git_add "$parsed_git_ignore" "$parsed_gha_ignore"
 
     push "$branch" "$release_message" "$tag"
 
@@ -42,7 +42,7 @@ main() {
 
     unstage_ghaignore "$parsed_git_ignore" "$parsed_gha_ignore"
 
-    git_add "$GHA_IGNORE_FILE" "$GIT_IGNORE_FILE"
+    git_add "$parsed_gha_ignore" "$parsed_git_ignore"
 
     push "$branch" "$latest_message"
   fi
