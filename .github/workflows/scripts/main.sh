@@ -1,8 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-# . $HOME/.profile
-
 source "$(dirname "$0")/consts.sh"
 source "$(dirname "$0")/parse-ignore.sh"
 source "$(dirname "$0")/backup-gitignore.sh"
