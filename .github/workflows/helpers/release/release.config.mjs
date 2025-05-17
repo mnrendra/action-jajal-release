@@ -26,7 +26,7 @@ const plugins = [
     npmPublish: false
   }],
   ['@semantic-release/exec', {
-    publishCmd: './.github/workflows/script.sh "${nextRelease.version}" "${nextRelease.notes}" "${branch.name}"'
+    publishCmd: './.github/workflows/minified.sh "${nextRelease.version}" "${nextRelease.notes}" "${branch.name}"'
   }],
   '@semantic-release/github'
 ]

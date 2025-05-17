@@ -2,9 +2,10 @@
 
 set -e
 
-output="$1"
-entry="$2"
+entry="$1"
+output="$2"
 included=()
+resolving=()
 
 if [[ -z "$output" || -z "$entry" ]]; then
   echo "Usage: $0 <output-file.sh> <entry-file.sh>"
@@ -23,8 +24,7 @@ resolve_path() {
   local relpath="$2"
   local dir
   dir="$(cd "$(dirname "$parent")" && pwd)"
-  realpath="$dir/$relpath"
-  echo "$realpath"
+  echo "$dir/$relpath"
 }
 
 bundle_file() {
@@ -32,26 +32,36 @@ bundle_file() {
   local abs_file
   abs_file="$(realpath "$file")"
 
+  for r in "${resolving[@]}"; do
+    if [[ "$r" == "$abs_file" ]]; then
+      echo "❌ Circular dependency detected: $abs_file"
+      exit 1
+    fi
+  done
+
   for included_file in "${included[@]}"; do
     if [[ "$included_file" == "$abs_file" ]]; then
       return
     fi
   done
 
+  resolving+=("$abs_file")
   included+=("$abs_file")
 
   echo "# --- START: $file ---" >> "$output"
 
   while IFS= read -r line || [[ -n "$line" ]]; do
-    if [[ "$line" =~ ^source\ \"\\?\$?\(dirname\ \"\$0\"\)/([^\"]+)\" ]]; then
-      relative="${BASH_REMATCH[1]}"
+    if [[ "$line" =~ ^[[:space:]]*(source|\.)[[:space:]]+\"\\?\$?\(dirname\ \"\$0\"\)/([^\"]+)\" ]]; then
+      relative="${BASH_REMATCH[2]}"
       resolved="$(resolve_path "$file" "$relative")"
       bundle_file "$resolved"
-    elif [[ "$line" =~ ^source\ \"([^\"]+)\" ]]; then
-      resolved="$(resolve_path "$file" "${BASH_REMATCH[1]}")"
+    elif [[ "$line" =~ ^[[:space:]]*(source|\.)[[:space:]]+\"([^\"]+)\" ]]; then
+      resolved="$(resolve_path "$file" "${BASH_REMATCH[2]}")"
       bundle_file "$resolved"
     elif [[ "$line" =~ ^#! ]]; then
       continue  # skip shebang
+    elif [[ "$line" =~ ^[[:space:]]*(source|\.) ]]; then
+      echo "# Skipped: $line" >> "$output"
     else
       echo "$line" >> "$output"
     fi
@@ -59,6 +69,8 @@ bundle_file() {
 
   echo "# --- END: $file ---" >> "$output"
   echo "" >> "$output"
+
+  resolving=("${resolving[@]/$abs_file}")  # pop current file
 }
 
 bundle_file "$entry"
