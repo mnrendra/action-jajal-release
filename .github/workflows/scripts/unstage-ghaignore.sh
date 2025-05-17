@@ -2,7 +2,6 @@
 set -euo pipefail
 
 source "$(dirname "$0")/consts.sh"
-source "$(dirname "$0")/recursive.sh"
 
 unstage_ghaignore() {
   local parsed_git_ignore="$1"
@@ -18,8 +17,11 @@ unstage_ghaignore() {
 
   for target in "${git_ignores[@]}"; do
     if ! printf "%s\n" "${gha_ignores[@]}" | grep -qxF "$target"; then
-      recursive_flag="$(recursive "$target")"
-      git rm --cached --ignore-unmatch "$recursive_flag" -- "$target" || true
+      if [[ "$target" == */ ]]; then
+        git rm --cached --ignore-unmatch -r -- "$target" || true
+      else
+        git rm --cached --ignore-unmatch -- "$target" || true
+      fi
     fi
   done
 }
