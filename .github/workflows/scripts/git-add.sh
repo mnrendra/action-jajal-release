@@ -19,4 +19,5 @@ git_add() {
     if ! printf "%s\n" "${second_ignores[@]}" | grep -qxF "$target"; then
       git add --force -- "$target"
     fi
-  done}
+  done
+}
