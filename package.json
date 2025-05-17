@@ -10,7 +10,7 @@
     "commit": "npx cz"
   },
   "devDependencies": {
-    "@semantic-release/exec": "^7.0.3",
+    "@semantic-release/exec": "^7.1.0",
     "@semantic-release/git": "^10.0.1",
     "@actions/core": "^1.11.1",
     "@types/node": "^22.15.3",
