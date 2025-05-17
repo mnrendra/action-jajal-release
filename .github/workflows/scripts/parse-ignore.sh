@@ -12,8 +12,6 @@ trim() {
 }
 
 parse_ignore() {
-  echo "start: parse_ignore"
-
   local ignore_file="$1"
   local line trimmed
   local result=()
@@ -29,6 +27,4 @@ parse_ignore() {
   done < "$ignore_file"
 
   printf '%s\n' "${result[@]}"
-
-  echo "end: parse_ignore"
 }
