@@ -1,0 +1,20 @@
+# This is, GitHub Action ignore file!
+
+# directories:
+.github/
+build/
+node_modules/
+src/
+
+# files:
+.czrc*
+.eslintrc*
+.ghaignore
+.gitignore*
+.npmignore
+.npmrc
+.pre-commit-config*
+CODE_OF_CONDUCT*
+package*
+rollup.config*
+tsconfig*
