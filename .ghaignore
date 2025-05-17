@@ -10,7 +10,7 @@ src/
 .czrc*
 .eslintrc*
 .ghaignore
-.gitignore
+.gitignore*
 .npmignore
 .npmrc
 .pre-commit-config*
