@@ -23,7 +23,7 @@ const plugins = [
   }],
   '@semantic-release/release-notes-generator',
   ['@semantic-release/exec', {
-    successCmd: './.github/workflows/scripts/main.sh "${nextRelease.version}" "${nextRelease.notes}" "${branch.name}"'
+    publishCmd: './.github/workflows/scripts/main.sh "${nextRelease.version}" "${nextRelease.notes}" "${branch.name}"'
   }]
 ]
 
