@@ -13,8 +13,6 @@ sed_i() {
 }
 
 update_action_version() {
-  echo "start: update_action_version"
-
   local file="$1"
   local version="$(printf "%s" "$2" | sed "s/'/'\"'\"'/g")"
 
@@ -29,6 +27,4 @@ update_action_version() {
       sed_i "$file" "1i version: '$version'"
     fi
   fi
-
-  echo "end: update_action_version"
 }

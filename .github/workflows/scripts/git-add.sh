@@ -2,8 +2,6 @@
 set -euo pipefail
 
 git_add() {
-  echo "start: git_add"
-
   local first_ignore="$1"
   local second_ignore="$2"
 
@@ -21,7 +19,4 @@ git_add() {
     if ! printf "%s\n" "${second_ignores[@]}" | grep -qxF "$target"; then
       git add --force -- "$target"
     fi
-  done
-
-  echo "end: git_add"
-}
+  done}
