@@ -14,7 +14,10 @@ generate_gitignore() {
   local gha_ignores=()
   while IFS= read -r line; do gha_ignores+=("$line"); done < <("$parsed_gha_ignore")
 
+  echo "munyuk:" "$parsed_gha_ignore"
+
   for target in "${gha_ignores[@]}"; do
+    echo "asu:" "$target"
     echo "$target" >> "$GIT_IGNORE_FILE"
 
     recursive_flag="$(recursive "$target")"

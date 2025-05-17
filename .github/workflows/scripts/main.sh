@@ -32,8 +32,6 @@ main() {
 
     backup_gitignore
 
-    echo "susu-asu:" "$parsed_gha_ignore"
-
     generate_gitignore "$parsed_gha_ignore"
 
     update_action_version "$action_file" "$version"
