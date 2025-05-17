@@ -15,16 +15,11 @@ git_add() {
 
   git add .
 
-  echo "add-start:"
-
   for target in "${first_ignores[@]}"; do
     if ! printf "%s\n" "${second_ignores[@]}" | grep -qxF "$target"; then
       if [ -e "$target" ]; then
-        echo "ditambahkan-paksa: " "$target"
-        git add --force -- "$target" || true
+        git add --force -- "$target" 2>/dev/null || true
       fi
     fi
   done
-
-  echo "add-end:"
 }

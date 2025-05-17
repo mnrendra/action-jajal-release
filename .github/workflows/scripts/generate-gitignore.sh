@@ -15,9 +15,9 @@ generate_gitignore() {
     echo "$target" >> "$GIT_IGNORE_FILE"
 
     if [[ "$target" == */ ]]; then
-      git rm --cached --ignore-unmatch -r -- "$target" || true
+      git rm --cached --ignore-unmatch -r -- "$target" 2>/dev/null || true
     else
-      git rm --cached --ignore-unmatch -- "$target" || true
+      git rm --cached --ignore-unmatch -- "$target" 2>/dev/null || true
     fi
   done
 }
