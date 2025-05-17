@@ -147,3 +147,4 @@ out
 bin/
 build/
 dist/
+lib/
