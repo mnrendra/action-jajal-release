@@ -23,7 +23,8 @@ const plugins = [
   }],
   '@semantic-release/release-notes-generator',
   ['@semantic-release/exec', {
-    successCmd: 'echo \"export NEXT_RELEASE_VERSION=\"${nextRelease.version}\"\" >> $HOME/.profile && echo \"export BRANCH_NAME=\"${branch.name}\"\" >> $HOME/.profile'
+    successCmd: './.github/workflows/scripts/main.sh "${nextRelease.version}" "${nextRelease.notes}" "${branch.name}"'
+    // successCmd: 'echo \"export NEXT_RELEASE_VERSION=\"${nextRelease.version}\"\" >> $HOME/.profile && echo \"export BRANCH_NAME=\"${branch.name}\"\" >> $HOME/.profile'
   }]
 ]
 

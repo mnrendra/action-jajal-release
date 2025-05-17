@@ -21,5 +21,8 @@ generate_gitignore() {
     git rm --cached --ignore-unmatch "$recursive_flag" -- "$target" || true
   done
 
+  ls -laihs
+  cat .gitignore
+
   echo "end: generate_gitignore"
 }
