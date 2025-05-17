@@ -10,8 +10,8 @@ push() {
   git push origin "$branch"
 
   if [ -n "$tag" ]; then
-    git tag -d "$tag" 2>/dev/null || true
-    git push origin -d tag "$tag" 2>/dev/null || true
+    git tag -d "$tag" || true
+    git push origin -d tag "$tag" || true
 
     git tag -s "$tag" -m "$message"
     git push origin "$tag"

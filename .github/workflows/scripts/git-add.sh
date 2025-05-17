@@ -20,7 +20,7 @@ git_add() {
   for target in "${first_ignores[@]}"; do
     if ! printf "%s\n" "${second_ignores[@]}" | grep -qxF "$target"; then
       echo "ditambahkan-paksa: " "$target"
-      git add --force -- "$target"
+      [ -e "$target" ] && git add --force -- "$target" || true
     fi
   done
 
