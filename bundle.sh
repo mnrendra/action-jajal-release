@@ -1,11 +1,13 @@
 #!/bin/bash
-
-set -e
+set -euo pipefail
+IFS=$'\n\t'
 
 entry="$1"
 output="$2"
 included=()
 resolving=()
+set_emitted=0
+ifs_emitted=0
 
 if [[ -z "$output" || -z "$entry" ]]; then
   echo "Usage: $0 <output-file.sh> <entry-file.sh>"
@@ -32,18 +34,24 @@ bundle_file() {
   local abs_file
   abs_file="$(realpath "$file")"
 
-  for r in "${resolving[@]}"; do
-    if [[ "$r" == "$abs_file" ]]; then
-      echo "❌ Circular dependency detected: $abs_file"
-      exit 1
-    fi
-  done
+  # Detect circular dependencies
+  if [[ ${#resolving[@]} -gt 0 ]]; then
+    for r in "${resolving[@]}"; do
+      if [[ "$r" == "$abs_file" ]]; then
+        echo "❌ Circular dependency detected: $abs_file"
+        exit 1
+      fi
+    done
+  fi
 
-  for included_file in "${included[@]}"; do
-    if [[ "$included_file" == "$abs_file" ]]; then
-      return
-    fi
-  done
+  # Skip already included files
+  if [[ ${#included[@]} -gt 0 ]]; then
+    for included_file in "${included[@]}"; do
+      if [[ "$included_file" == "$abs_file" ]]; then
+        return
+      fi
+    done
+  fi
 
   resolving+=("$abs_file")
   included+=("$abs_file")
@@ -59,7 +67,22 @@ bundle_file() {
       resolved="$(resolve_path "$file" "${BASH_REMATCH[2]}")"
       bundle_file "$resolved"
     elif [[ "$line" =~ ^#! ]]; then
-      continue  # skip shebang
+      # skip shebang
+      continue
+    elif [[ "$line" =~ ^[[:space:]]*set[[:space:]]+-euo[[:space:]]+pipefail ]]; then
+      if [[ "$set_emitted" -eq 0 ]]; then
+        echo "$line" >> "$output"
+        set_emitted=1
+      else
+        echo "# Skipped duplicated: $line" >> "$output"
+      fi
+    elif [[ "$line" =~ ^[[:space:]]*IFS[[:space:]]*=[[:space:]]*(\$\'\\?n\\?\\t\'|'\$\\?n\\?\\t'|\"\$\\?n\\?\\t\") ]]; then
+      if [[ "$ifs_emitted" -eq 0 ]]; then
+        echo "$line" >> "$output"
+        ifs_emitted=1
+      else
+        echo "# Skipped duplicated: $line" >> "$output"
+      fi
     elif [[ "$line" =~ ^[[:space:]]*(source|\.) ]]; then
       echo "# Skipped: $line" >> "$output"
     else
@@ -70,7 +93,22 @@ bundle_file() {
   echo "# --- END: $file ---" >> "$output"
   echo "" >> "$output"
 
-  resolving=("${resolving[@]/$abs_file}")  # pop current file
+  # Remove current file from resolving list safely
+  local tmp
+  tmp=()
+  if [[ ${#resolving[@]} -gt 0 ]]; then
+    for r in "${resolving[@]}"; do
+      if [[ "$r" != "$abs_file" ]]; then
+        tmp+=("$r")
+      fi
+    done
+  fi
+
+  if [[ ${#tmp[@]} -gt 0 ]]; then
+    resolving=("${tmp[@]}")
+  else
+    resolving=()
+  fi
 }
 
 bundle_file "$entry"

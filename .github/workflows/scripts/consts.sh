@@ -1,5 +1,6 @@
 #!/bin/bash
 set -euo pipefail
+IFS=$'\n\t'
 
 ACTION_FILE="action.yml"
 BRANCH="main"

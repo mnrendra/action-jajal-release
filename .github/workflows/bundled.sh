@@ -4,9 +4,11 @@
 
 # --- START: ./.github/workflows/scripts/main.sh ---
 set -euo pipefail
+IFS=$'\n\t'
 
 # --- START: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/consts.sh ---
-set -euo pipefail
+# Skipped duplicated: set -euo pipefail
+# Skipped duplicated: IFS=$'\n\t'
 
 ACTION_FILE="action.yml"
 BRANCH="main"
@@ -14,8 +16,25 @@ GHA_IGNORE_FILE=".ghaignore"
 GIT_IGNORE_FILE=".gitignore"
 # --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/consts.sh ---
 
-# --- START: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/parse-ignore.sh ---
-set -euo pipefail
+# --- START: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/parse.sh ---
+# Skipped duplicated: set -euo pipefail
+# Skipped duplicated: IFS=$'\n\t'
+
+# --- START: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/isvalid.sh ---
+# Skipped duplicated: set -euo pipefail
+# Skipped duplicated: IFS=$'\n\t'
+
+isvalid() {
+  local path="$1"
+
+  if [[ "$path" =~ ^([^[:cntrl:]]|/)+$ ]] && [[ "$path" != *".."* ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+# --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/isvalid.sh ---
+
 
 trim() {
   local value="$1"
@@ -27,186 +46,214 @@ trim() {
   echo "$trimmed"
 }
 
-parse_ignore() {
-  local ignore_file="$1"
+parse() {
+  local file="$1"
   local line trimmed
   local result=()
 
-  while IFS= read -r line; do
+  while IFS= read -r line || [[ -n "$line" ]]; do
     trimmed="$(trim "$line")"
+    trimmed="${trimmed%%#*}"
+    trimmed="$(trim "$trimmed")"
 
     [[ -z "$trimmed" || "$trimmed" == \#* ]] && continue
 
-    if ! printf "%s\n" "${result[@]}" | grep -qxF "$trimmed"; then
+    isvalid "$trimmed" || continue
+
+    if ! printf "%s\n" "${result[@]}" | grep -qxF -- "$trimmed"; then
       result+=("$trimmed")
     fi
-  done < "$ignore_file"
+  done < "$file"
 
   printf '%s\n' "${result[@]}"
 }
-# --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/parse-ignore.sh ---
+# --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/parse.sh ---
 
-# --- START: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/backup-gitignore.sh ---
-set -euo pipefail
+# --- START: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/backup.sh ---
+# Skipped duplicated: set -euo pipefail
+# Skipped duplicated: IFS=$'\n\t'
 
 
-backup_gitignore() {
+backup() {
   local file="$GIT_IGNORE_FILE"
 
   if [ -f "$file" ]; then
-    mv "$file" "$file.backup"
+    cp -- "$file" "$file.backup"
+    rm -f -- "$file"
   fi
 }
-# --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/backup-gitignore.sh ---
+# --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/backup.sh ---
 
-# --- START: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/generate-gitignore.sh ---
-set -euo pipefail
+# --- START: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/generate.sh ---
+# Skipped duplicated: set -euo pipefail
+# Skipped duplicated: IFS=$'\n\t'
+
+# --- START: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/remove.sh ---
+# Skipped duplicated: set -euo pipefail
+# Skipped duplicated: IFS=$'\n\t'
+
+remove() {
+  local target="$1"
+
+  if [[ "$target" == */ ]]; then
+    git rm --cached --ignore-unmatch -r -- "$target" 2>/dev/null || true
+  else
+    git rm --cached --ignore-unmatch -- "$target" 2>/dev/null || true
+  fi
+}
+# --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/remove.sh ---
 
 
-generate_gitignore() {
+generate() {
   local parsed_gha_ignore="$1"
 
   local line target
 
   local gha_ignores=()
-  while IFS= read -r line; do gha_ignores+=("$line"); done <<< "$parsed_gha_ignore"
+  while IFS= read -r line || [[ -n "$line" ]]; do gha_ignores+=("$line"); done <<< "$parsed_gha_ignore"
 
   for target in "${gha_ignores[@]}"; do
     echo "$target" >> "$GIT_IGNORE_FILE"
-
-    if [[ "$target" == */ ]]; then
-      git rm --cached --ignore-unmatch -r -- "$target" 2>/dev/null || true
-    else
-      git rm --cached --ignore-unmatch -- "$target" 2>/dev/null || true
-    fi
+    remove "$target"
   done
 }
-# --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/generate-gitignore.sh ---
+# --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/generate.sh ---
 
-# --- START: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/update-action-version.sh ---
-set -euo pipefail
+# --- START: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/update.sh ---
+# Skipped duplicated: set -euo pipefail
+# Skipped duplicated: IFS=$'\n\t'
 
-sed_i() {
+sedi() {
   local file="$1"
   local sed_expr="$2"
 
   if sed -i -E "$sed_expr" "$file" 2>/dev/null; then
     :
   else
-    sed -i '' -E "$sed_expr" "$file"
+    sed -i '' -E "$sed_expr" "$file" 2>/dev/null
   fi
 }
 
-update_action_version() {
+escape() {
+  local str="$1"
+  str="${str//\'/''}"
+  echo "$str"
+}
+
+update() {
   local file="$1"
-  local version="$(printf "%s" "$2" | sed "s/'/'\"'\"'/g")"
+  local version="$(escape "$(printf "%s" "$2" | sed "s/'/'\"'\"'/g")")"
 
   if [ -f "$file" ]; then
     if grep -q '^version:' "$file"; then
-      sed_i "$file" "s/^version:.*/version: '$version'/"
+      sedi "$file" "s/^version:.*/version: '$version'/"
     elif grep -q '^description:' "$file"; then
-      sed_i "$file" "/^description:/a version: '$version'"
+      sedi "$file" "/^description:/a version: '$version'"
     elif grep -q '^name:' "$file"; then
-      sed_i "$file" "/^name:/a version: '$version'"
+      sedi "$file" "/^name:/a version: '$version'"
     else
-      sed_i "$file" "1i version: '$version'"
+      sedi "$file" "1i version: '$version'"
     fi
   fi
 }
-# --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/update-action-version.sh ---
+# --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/update.sh ---
 
-# --- START: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/git-add.sh ---
-set -euo pipefail
+# --- START: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/sync.sh ---
+# Skipped duplicated: set -euo pipefail
+# Skipped duplicated: IFS=$'\n\t'
 
-git_add() {
-  local first_ignore="$1"
-  local second_ignore="$2"
 
-  local first_line second_line target
+sync() {
+  local src_ignore="$1"
+  local dst_ignore="$2"
+  local src_line dst_line
+  local src_list=()
+  local dst_list=()
 
-  local first_ignores=()
-  while IFS= read -r first_line; do first_ignores+=("$first_line"); done <<< "$first_ignore"
-
-  local second_ignores=()
-  while IFS= read -r second_line; do second_ignores+=("$second_line"); done <<< "$second_ignore"
+  while IFS= read -r src_line || [[ -n "$src_line" ]]; do src_list+=("$src_line"); done <<< "$src_ignore"
+  while IFS= read -r dst_line || [[ -n "$dst_line" ]]; do dst_list+=("$dst_line"); done <<< "$dst_ignore"
 
   git add .
 
-  for target in "${first_ignores[@]}"; do
-    if ! printf "%s\n" "${second_ignores[@]}" | grep -qxF "$target"; then
-      if [ -e "$target" ]; then
+  for target in "${dst_list[@]}"; do
+    if ! printf "%s\n" "${src_list[@]}" | grep -qxF -- "$target"; then
+      if isvalid "$target"; then
+        remove "$target"
+      fi
+    fi
+  done
+
+  for target in "${src_list[@]}"; do
+    if ! printf "%s\n" "${dst_list[@]}" | grep -qxF -- "$target"; then
+      if [ -e "$target" ] && isvalid "$target"; then
         git add --force -- "$target" 2>/dev/null || true
       fi
     fi
   done
 }
-# --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/git-add.sh ---
+# --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/sync.sh ---
 
 # --- START: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/push.sh ---
-set -euo pipefail
+# Skipped duplicated: set -euo pipefail
+# Skipped duplicated: IFS=$'\n\t'
+
+hasgpgkey() {
+  if git config user.signingkey >/dev/null 2>&1; then
+    return 0
+  fi
+
+  return 1
+}
 
 push() {
   local branch="$1"
   local message="$2"
   local tag="${3:-""}"
+  local warning="not sending a push certificate since the receiving end does not support --signed push"
 
-  git commit -S --allow-empty -m "$message"
-  git push origin "$branch"
+  if hasgpgkey; then
+    git commit -S --allow-empty -m -- "$message"
+  else
+    git commit --allow-empty -m -- "$message"
+  fi
+
+  git push origin "$branch" 2> >(grep -v -- "$warning" >&2)
 
   if [ -n "$tag" ]; then
-    git tag -d "$tag" 2>/dev/null || true
-    git push origin -d tag "$tag" 2>/dev/null || true
+    git tag -d -- "$tag" 2>/dev/null || true
 
-    git tag -s "$tag" -m "$message"
-    git push origin "$tag"
+    git push origin -d tag -- "$tag" 2>/dev/null
+
+    if hasgpgkey; then
+      git tag -s "$tag" -m -- "$message"
+    else
+      git tag "$tag" -m -- "$message"
+    fi
+
+    git push origin -- "$tag" 2> >(grep -v -- "$warning" >&2)
   fi
 }
 # --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/push.sh ---
 
-# --- START: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/restore-gitignore.sh ---
-set -euo pipefail
+# --- START: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/restore.sh ---
+# Skipped duplicated: set -euo pipefail
+# Skipped duplicated: IFS=$'\n\t'
 
 
-restore_gitignore() {
+restore() {
   local file="$GIT_IGNORE_FILE"
+  local backup_file="$file.backup"
 
   if [ -f "$file" ]; then
-    rm -f "$file"
+    rm -f -- "$file"
   fi
 
-  if [ -f "$file.backup" ]; then
-    mv "$file.backup" "$file"
+  if [ -n "$backup_file" ] && [ -f "$backup_file" ]; then
+    cp -- "$backup_file" "$file"
+    rm -f -- "$backup_file"
   fi
 }
-# --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/restore-gitignore.sh ---
-
-# --- START: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/unstage-ghaignore.sh ---
-set -euo pipefail
-
-
-unstage_ghaignore() {
-  local parsed_git_ignore="$1"
-  local parsed_gha_ignore="$2"
-
-  local git_line gha_line target
-
-  local git_ignores=()
-  while IFS= read -r git_line; do git_ignores+=("$git_line"); done <<< "$parsed_git_ignore"
-
-  local gha_ignores=()
-  while IFS= read -r gha_line; do gha_ignores+=("$gha_line"); done <<< "$parsed_gha_ignore"
-
-  for target in "${git_ignores[@]}"; do
-    if ! printf "%s\n" "${gha_ignores[@]}" | grep -qxF "$target"; then
-      if [[ "$target" == */ ]]; then
-        git rm --cached --ignore-unmatch -r -- "$target" 2>/dev/null || true
-      else
-        git rm --cached --ignore-unmatch -- "$target" 2>/dev/null || true
-      fi
-    fi
-  done
-}
-# --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/unstage-ghaignore.sh ---
+# --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/restore.sh ---
 
 
 main() {
@@ -215,35 +262,33 @@ main() {
   local branch="${3:-"$BRANCH"}"
   local action_file="${4:-"$ACTION_FILE"}"
   local tag="${5:-"v$version"}"
-  local release_message="${6:-"release: "$tag""$'\n\n'"$notes"}"
-  local latest_message="${7:-"latest: "$tag""}"
+  local release_message="${6:-"release: $tag"$'\n\n'"$notes"}"
+  local latest_message="${7:-"latest: $tag"}"
   local parsed_gha_ignore
   local parsed_git_ignore
 
   if [ -n "${version:-}" ] && [ -n "${branch:-}" ]; then
-    parsed_gha_ignore="$(parse_ignore "$GHA_IGNORE_FILE")"
-    parsed_git_ignore="$(parse_ignore "$GIT_IGNORE_FILE")"
+    parsed_gha_ignore="$(parse "$GHA_IGNORE_FILE")"
+    parsed_git_ignore="$(parse "$GIT_IGNORE_FILE")"
 
-    backup_gitignore
+    backup
 
-    generate_gitignore "$parsed_gha_ignore"
+    generate "$parsed_gha_ignore"
 
-    update_action_version "$action_file" "$version"
+    update "$action_file" "$version"
 
-    git_add "$parsed_git_ignore" "$parsed_gha_ignore"
+    sync "$parsed_gha_ignore" "$parsed_git_ignore"
 
     push "$branch" "$release_message" "$tag"
 
-    restore_gitignore
+    restore
 
-    unstage_ghaignore "$parsed_git_ignore" "$parsed_gha_ignore"
-
-    git_add "$parsed_gha_ignore" "$parsed_git_ignore"
+    sync "$parsed_git_ignore" "$parsed_gha_ignore"
 
     push "$branch" "$latest_message"
   fi
 }
 
-main "$1" "${2:-""}" "${3:-""}" "${4:-""}" "${5:-""}" "${6:-""}" "${7:-""}"
+main "$@"
 # --- END: ./.github/workflows/scripts/main.sh ---
 
