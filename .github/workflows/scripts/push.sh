@@ -24,21 +24,17 @@ push() {
 
   git push origin "$branch" 2> >(grep -v -- "$warning" >&2)
 
-  git tag --list
-
-  echo "$tag" "asu"
-
   if [ -n "$tag" ]; then
-    git tag -d "$tag"
+    git tag -d "$tag" 2>/dev/null || true
 
     git push origin -d tag "$tag"
-  fi
 
-  if hasgpgkey; then
-    git tag -s "$tag" -m "$message"
-  else
-    git tag "$tag" -m "$message"
-  fi
+    if hasgpgkey; then
+      git tag -s "$tag" -m "$message"
+    else
+      git tag "$tag" -m "$message"
+    fi
 
-  git push origin "$tag" 2> >(grep -v -- "$warning" >&2)
+    git push origin "$tag" 2> >(grep -v -- "$warning" >&2)
+  fi
 }

@@ -9,7 +9,7 @@ sedi() {
   if sed -i -E "$sed_expr" "$file" 2>/dev/null; then
     :
   else
-    sed -i '' -E "$sed_expr" "$file" 2>/dev/null
+    sed -i '' -E "$sed_expr" "$file"
   fi
 }
 
