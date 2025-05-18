@@ -1,0 +1,60 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - '[0-9].[0-9].x'
+      - '[0-9].x.x'
+      - '[0-9].x'
+      - main
+      - next
+      - rc
+      - beta
+      - alpha
+
+permissions:
+  contents: read
+
+jobs:
+  # # CodeQL
+  # codeql:
+  #   name: CodeQL
+  #   permissions:
+  #     # read
+  #     actions: read
+  #     contents: read
+  #     packages: read
+  #     # write
+  #     security-events: write
+  #   uses: ./.github/workflows/reusable.codeql.yml
+
+  # # Scorecard
+  # scorecard:
+  #   name: Scorecard
+  #   permissions:
+  #     # read
+  #     actions: read
+  #     checks: read
+  #     contents: read
+  #     issues: read
+  #     pull-requests: read
+  #     # write
+  #     id-token: write
+  #     security-events: write
+  #   uses: ./.github/workflows/reusable.scorecard.yml
+
+  # Release
+  release:
+    name: Release
+    # needs: [codeql, scorecard]
+    permissions:
+      # write
+      contents: write
+      id-token: write
+      issues: write
+      pull-requests: write
+    uses: ./.github/workflows/reusable.release.yml
+    secrets:
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+      PASSPHRASE: ${{ secrets.PASSPHRASE }}
+      TOKEN: ${{ secrets.TOKEN }}
