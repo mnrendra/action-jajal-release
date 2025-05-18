@@ -1,8 +1,6 @@
 name: Action Jajal Release
-
-version: '9.0.0'
-
 description: Jajal release action.
+version: '9.0.0'
 
 author: Muhammad Rendra
 
