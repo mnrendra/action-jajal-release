@@ -5,6 +5,7 @@ IFS=$'\n\t'
 remove() {
   echo "----------start-remove----------"
   local target="$1"
+  echo "----------remove:" "$target"
 
   if [[ "$target" == */ ]]; then
     git rm --cached --ignore-unmatch -r -- "$target" 2>/dev/null || true
