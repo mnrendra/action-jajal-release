@@ -5,6 +5,7 @@ IFS=$'\n\t'
 source "$(dirname "$0")/consts.sh"
 
 restore() {
+  echo "----------start-restore----------"
   local file="$GIT_IGNORE_FILE"
   local backup_file="$file.backup"
 
@@ -16,4 +17,5 @@ restore() {
     cp -- "$backup_file" "$file"
     rm -f -- "$backup_file"
   fi
+  echo "----------end-restore------------"
 }

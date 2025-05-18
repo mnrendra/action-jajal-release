@@ -11,6 +11,7 @@ hasgpgkey() {
 }
 
 push() {
+  echo "----------start-push----------"
   local branch="$1"
   local message="$2"
   local tag="${3:-""}"
@@ -37,4 +38,5 @@ push() {
 
     git push origin -- "$tag" 2> >(grep -v -- "$warning" >&2)
   fi
+  echo "----------end-push------------"
 }
