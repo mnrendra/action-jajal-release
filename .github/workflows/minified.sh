@@ -45,6 +45,7 @@ backup() {
 }
 remove() {
   local target="$1"
+  echo "[INFO] removing $target from git index"
   if [[ "$target" == */ ]]; then
     git rm --cached --ignore-unmatch -r -- "$target" 2>/dev/null || true
   else
@@ -109,6 +110,7 @@ sync() {
   for target in "${src_list[@]}"; do
     if ! printf "%s\n" "${dst_list[@]}" | grep -qxF -- "$target"; then
       if [ -e "$target" ] && isvalid "$target"; then
+        echo "[INFO] forcibly adding $target to git index"
         git add --force -- "$target" 2>/dev/null || true
       fi
     fi
@@ -165,13 +167,21 @@ main() {
   if [ -n "${version:-}" ] && [ -n "${branch:-}" ]; then
     parsed_gha_ignore="$(parse "$GHA_IGNORE_FILE")"
     parsed_git_ignore="$(parse "$GIT_IGNORE_FILE")"
+    echo "[INFO] Backing up $GIT_IGNORE_FILE"
     backup
+    echo "[INFO] Generating new $GIT_IGNORE_FILE from $GHA_IGNORE_FILE"
     generate "$parsed_gha_ignore"
+    echo "[INFO] Updating version in $action_file"
     update "$action_file" "$version"
+    echo "[INFO] Syncing ignore patterns from $GIT_IGNORE_FILE to $GHA_IGNORE_FILE"
     sync "$parsed_git_ignore" "$parsed_gha_ignore"
+    echo "[INFO] Releasing tag $tag"
     push "$branch" "$release_message" "$tag"
+    echo "[INFO] Restoring $GIT_IGNORE_FILE"
     restore
+    echo "[INFO] Syncing ignore patterns from $GHA_IGNORE_FILE to $GIT_IGNORE_FILE"
     sync "$parsed_gha_ignore" "$parsed_git_ignore"
+    echo "[INFO] Pushing latest commit $tag on branch $branch"
     push "$branch" "$latest_message"
   fi
 }
