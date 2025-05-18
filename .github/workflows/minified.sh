@@ -131,6 +131,8 @@ push() {
     git commit --allow-empty -m "$message"
   fi
   git push origin "$branch" 2> >(grep -v -- "$warning" >&2)
+  git tag --list
+  echo "$tag"
   if [ -n "$tag" ]; then
     git tag -d "$tag"
     git push origin -d tag "$tag"
