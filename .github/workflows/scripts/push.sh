@@ -26,7 +26,7 @@ push() {
 
   git tag --list
 
-  echo "$tag"
+  echo "$tag" "asu"
 
   if [ -n "$tag" ]; then
     git tag -d "$tag"
