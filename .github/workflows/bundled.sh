@@ -95,15 +95,16 @@ backup() {
 # Skipped duplicated: IFS=$'\n\t'
 
 remove() {
-  echo "----------start-remove----------"
+  echo "---start-remove----------"
   local target="$1"
+  echo "---remove:" "$target"
 
   if [[ "$target" == */ ]]; then
     git rm --cached --ignore-unmatch -r -- "$target" 2>/dev/null || true
   else
     git rm --cached --ignore-unmatch -- "$target" 2>/dev/null || true
   fi
-  echo "----------end-remove------------"
+  echo "---end-remove------------"
 }
 # --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/remove.sh ---
 
@@ -223,9 +224,9 @@ push() {
   local warning="not sending a push certificate since the receiving end does not support --signed push"
 
   if hasgpgkey; then
-    git commit -S --allow-empty -m -- "$message"
+    git commit -S --allow-empty -m "$message"
   else
-    git commit --allow-empty -m -- "$message"
+    git commit --allow-empty -m "$message"
   fi
 
   git push origin "$branch" 2> >(grep -v -- "$warning" >&2)
@@ -233,15 +234,15 @@ push() {
   if [ -n "$tag" ]; then
     git tag -d -- "$tag" 2>/dev/null || true
 
-    git push origin -d tag -- "$tag" 2>/dev/null
+    git push origin -d tag "$tag" 2>/dev/null
 
     if hasgpgkey; then
-      git tag -s "$tag" -m -- "$message"
+      git tag -s "$tag" -m "$message"
     else
-      git tag "$tag" -m -- "$message"
+      git tag "$tag" -m "$message"
     fi
 
-    git push origin -- "$tag" 2> >(grep -v -- "$warning" >&2)
+    git push origin "$tag" 2> >(grep -v -- "$warning" >&2)
   fi
   echo "----------end-push------------"
 }
