@@ -6,7 +6,6 @@ source "$(dirname "$0")/consts.sh"
 source "$(dirname "$0")/remove.sh"
 
 generate() {
-  echo "----------start-generate----------"
   local parsed_gha_ignore="$1"
 
   local line target
@@ -18,5 +17,4 @@ generate() {
     echo "$target" >> "$GIT_IGNORE_FILE"
     remove "$target"
   done
-  echo "----------end-generate------------"
 }

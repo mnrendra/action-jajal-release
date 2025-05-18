@@ -75,14 +75,12 @@ parse() {
 
 
 backup() {
-  echo "----------start-backup----------"
   local file="$GIT_IGNORE_FILE"
 
   if [ -f "$file" ]; then
     cp -- "$file" "$file.backup"
     rm -f -- "$file"
   fi
-  echo "----------end-backup------------"
 }
 # --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/backup.sh ---
 
@@ -95,22 +93,18 @@ backup() {
 # Skipped duplicated: IFS=$'\n\t'
 
 remove() {
-  echo "---start-remove----------"
   local target="$1"
-  echo "---remove:" "$target"
 
   if [[ "$target" == */ ]]; then
     git rm --cached --ignore-unmatch -r -- "$target" 2>/dev/null || true
   else
     git rm --cached --ignore-unmatch -- "$target" 2>/dev/null || true
   fi
-  echo "---end-remove------------"
 }
 # --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/remove.sh ---
 
 
 generate() {
-  echo "----------start-generate----------"
   local parsed_gha_ignore="$1"
 
   local line target
@@ -122,7 +116,6 @@ generate() {
     echo "$target" >> "$GIT_IGNORE_FILE"
     remove "$target"
   done
-  echo "----------end-generate------------"
 }
 # --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/generate.sh ---
 
@@ -148,7 +141,6 @@ escape() {
 }
 
 update() {
-  echo "----------start-update----------"
   local file="$1"
   local version="$(escape "$(printf "%s" "$2" | sed "s/'/'\"'\"'/g")")"
 
@@ -163,7 +155,6 @@ update() {
       sedi "$file" "1i version: '$version'"
     fi
   fi
-  echo "----------end-update------------"
 }
 # --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/update.sh ---
 
@@ -173,7 +164,6 @@ update() {
 
 
 sync() {
-  echo "----------start-sync----------"
   local src_ignore="$1"
   local dst_ignore="$2"
   local src_line dst_line
@@ -200,7 +190,6 @@ sync() {
       fi
     fi
   done
-  echo "----------end-sync------------"
 }
 # --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/sync.sh ---
 
@@ -217,7 +206,6 @@ hasgpgkey() {
 }
 
 push() {
-  echo "----------start-push----------"
   local branch="$1"
   local message="$2"
   local tag="${3:-""}"
@@ -232,19 +220,18 @@ push() {
   git push origin "$branch" 2> >(grep -v -- "$warning" >&2)
 
   if [ -n "$tag" ]; then
-    git tag -d -- "$tag" 2>/dev/null || true
+    git tag -d "$tag"
 
-    git push origin -d tag "$tag" 2>/dev/null
-
-    if hasgpgkey; then
-      git tag -s "$tag" -m "$message"
-    else
-      git tag "$tag" -m "$message"
-    fi
-
-    git push origin "$tag" 2> >(grep -v -- "$warning" >&2)
+    git push origin -d tag "$tag"
   fi
-  echo "----------end-push------------"
+
+  if hasgpgkey; then
+    git tag -s "$tag" -m "$message"
+  else
+    git tag "$tag" -m "$message"
+  fi
+
+  git push origin "$tag" 2> >(grep -v -- "$warning" >&2)
 }
 # --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/push.sh ---
 
@@ -254,7 +241,6 @@ push() {
 
 
 restore() {
-  echo "----------start-restore----------"
   local file="$GIT_IGNORE_FILE"
   local backup_file="$file.backup"
 
@@ -266,7 +252,6 @@ restore() {
     cp -- "$backup_file" "$file"
     rm -f -- "$backup_file"
   fi
-  echo "----------end-restore------------"
 }
 # --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/restore.sh ---
 
@@ -292,13 +277,13 @@ main() {
 
     update "$action_file" "$version"
 
-    sync "$parsed_gha_ignore" "$parsed_git_ignore"
+    sync "$parsed_git_ignore" "$parsed_gha_ignore"
 
     push "$branch" "$release_message" "$tag"
 
     restore
 
-    sync "$parsed_git_ignore" "$parsed_gha_ignore"
+    sync "$parsed_gha_ignore" "$parsed_git_ignore"
 
     push "$branch" "$latest_message"
   fi

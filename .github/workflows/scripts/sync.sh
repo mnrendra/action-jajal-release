@@ -6,7 +6,6 @@ source "$(dirname "$0")/isvalid.sh"
 source "$(dirname "$0")/remove.sh"
 
 sync() {
-  echo "----------start-sync----------"
   local src_ignore="$1"
   local dst_ignore="$2"
   local src_line dst_line
@@ -33,5 +32,4 @@ sync() {
       fi
     fi
   done
-  echo "----------end-sync------------"
 }

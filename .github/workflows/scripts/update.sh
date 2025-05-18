@@ -20,7 +20,6 @@ escape() {
 }
 
 update() {
-  echo "----------start-update----------"
   local file="$1"
   local version="$(escape "$(printf "%s" "$2" | sed "s/'/'\"'\"'/g")")"
 
@@ -35,5 +34,4 @@ update() {
       sedi "$file" "1i version: '$version'"
     fi
   fi
-  echo "----------end-update------------"
 }

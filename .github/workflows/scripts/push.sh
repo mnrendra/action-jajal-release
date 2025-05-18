@@ -11,7 +11,6 @@ hasgpgkey() {
 }
 
 push() {
-  echo "----------start-push----------"
   local branch="$1"
   local message="$2"
   local tag="${3:-""}"
@@ -26,17 +25,16 @@ push() {
   git push origin "$branch" 2> >(grep -v -- "$warning" >&2)
 
   if [ -n "$tag" ]; then
-    git tag -d -- "$tag" 2>/dev/null || true
+    git tag -d "$tag"
 
-    git push origin -d tag "$tag" 2>/dev/null
-
-    if hasgpgkey; then
-      git tag -s "$tag" -m "$message"
-    else
-      git tag "$tag" -m "$message"
-    fi
-
-    git push origin "$tag" 2> >(grep -v -- "$warning" >&2)
+    git push origin -d tag "$tag"
   fi
-  echo "----------end-push------------"
+
+  if hasgpgkey; then
+    git tag -s "$tag" -m "$message"
+  else
+    git tag "$tag" -m "$message"
+  fi
+
+  git push origin "$tag" 2> >(grep -v -- "$warning" >&2)
 }

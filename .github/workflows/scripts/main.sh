@@ -32,13 +32,13 @@ main() {
 
     update "$action_file" "$version"
 
-    sync "$parsed_gha_ignore" "$parsed_git_ignore"
+    sync "$parsed_git_ignore" "$parsed_gha_ignore"
 
     push "$branch" "$release_message" "$tag"
 
     restore
 
-    sync "$parsed_git_ignore" "$parsed_gha_ignore"
+    sync "$parsed_gha_ignore" "$parsed_git_ignore"
 
     push "$branch" "$latest_message"
   fi
