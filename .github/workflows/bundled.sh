@@ -209,7 +209,6 @@ push() {
   local branch="$1"
   local message="$2"
   local tag="${3:-""}"
-  local warning="not sending a push certificate since the receiving end does not support --signed push"
 
   if hasgpgkey; then
     git commit -S --allow-empty -m "$message"
@@ -217,7 +216,7 @@ push() {
     git commit --allow-empty -m "$message"
   fi
 
-  git push origin "$branch" 2> >(grep -v -- "$warning" >&2)
+  git push origin "$branch"
 
   if [ -n "$tag" ]; then
     git tag -d "$tag" 2>/dev/null || true
@@ -230,7 +229,7 @@ push() {
       git tag "$tag" -m "$message"
     fi
 
-    git push origin "$tag" 2> >(grep -v -- "$warning" >&2)
+    git push origin "$tag"
   fi
 }
 # --- END: /Users/mnrendra/Projects/@mnrendra/action-jajal-release/.github/workflows/scripts/push.sh ---
