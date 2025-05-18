@@ -26,8 +26,6 @@ update() {
   if [ -f "$file" ]; then
     if grep -q '^version:' "$file"; then
       sedi "$file" "s/^version:.*/version: '$version'/"
-    elif grep -q '^description:' "$file"; then
-      sedi "$file" "/^description:/a version: '$version'"
     elif grep -q '^name:' "$file"; then
       sedi "$file" "/^name:/a version: '$version'"
     else

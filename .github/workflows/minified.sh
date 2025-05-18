@@ -59,7 +59,6 @@ generate() {
   while IFS= read -r line || [[ -n "$line" ]]; do gha_ignores+=("$line"); done <<< "$parsed_gha_ignore"
   for target in "${gha_ignores[@]}"; do
     echo "$target" >> "$GIT_IGNORE_FILE"
-    remove "$target"
   done
 }
 sedi() {
@@ -82,8 +81,6 @@ update() {
   if [ -f "$file" ]; then
     if grep -q '^version:' "$file"; then
       sedi "$file" "s/^version:.*/version: '$version'/"
-    elif grep -q '^description:' "$file"; then
-      sedi "$file" "/^description:/a version: '$version'"
     elif grep -q '^name:' "$file"; then
       sedi "$file" "/^name:/a version: '$version'"
     else
@@ -110,7 +107,7 @@ sync() {
   for target in "${src_list[@]}"; do
     if ! printf "%s\n" "${dst_list[@]}" | grep -qxF -- "$target"; then
       if [ -e "$target" ] && isvalid "$target"; then
-        echo "[INFO] forcibly adding $target to git index"
+        echo "[INFO] Adding $target to git index"
         git add --force -- "$target" 2>/dev/null || true
       fi
     fi
@@ -169,20 +166,28 @@ main() {
     parsed_git_ignore="$(parse "$GIT_IGNORE_FILE")"
     echo "[INFO] Backing up $GIT_IGNORE_FILE"
     backup
+    echo "[SUCCESS] ✅ $GIT_IGNORE_FILE was successfully backed up"
     echo "[INFO] Generating new $GIT_IGNORE_FILE from $GHA_IGNORE_FILE"
     generate "$parsed_gha_ignore"
+    echo "[SUCCESS] ✅ New $GIT_IGNORE_FILE was successfully generated"
     echo "[INFO] Updating version in $action_file"
     update "$action_file" "$version"
+    echo "[SUCCESS] ✅ $action_file was successfully updated"
     echo "[INFO] Syncing ignore patterns from $GIT_IGNORE_FILE to $GHA_IGNORE_FILE"
     sync "$parsed_git_ignore" "$parsed_gha_ignore"
+    echo "[SUCCESS] ✅ Ignore patterns were successfully synced"
     echo "[INFO] Releasing tag $tag"
     push "$branch" "$release_message" "$tag"
+    echo "[SUCCESS] ✅ Tag $tag was successfully released"
     echo "[INFO] Restoring $GIT_IGNORE_FILE"
     restore
+    echo "[SUCCESS] ✅ $GIT_IGNORE_FILE was successfully restored"
     echo "[INFO] Syncing ignore patterns from $GHA_IGNORE_FILE to $GIT_IGNORE_FILE"
     sync "$parsed_gha_ignore" "$parsed_git_ignore"
-    echo "[INFO] Pushing latest commit $tag on branch $branch"
+    echo "[SUCCESS] ✅ Ignore patterns were successfully synced"
+    echo "[INFO] Pushing latest commit $tag on branch '$branch'"
     push "$branch" "$latest_message"
+    echo "[SUCCESS] ✅ Branch '$branch' was successfully updated with the latest commit $tag"
   fi
 }
 main "$@"

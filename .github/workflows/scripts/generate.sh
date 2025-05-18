@@ -15,6 +15,5 @@ generate() {
 
   for target in "${gha_ignores[@]}"; do
     echo "$target" >> "$GIT_IGNORE_FILE"
-    remove "$target"
   done
 }

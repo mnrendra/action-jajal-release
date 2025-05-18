@@ -28,7 +28,7 @@ sync() {
   for target in "${src_list[@]}"; do
     if ! printf "%s\n" "${dst_list[@]}" | grep -qxF -- "$target"; then
       if [ -e "$target" ] && isvalid "$target"; then
-        echo "[INFO] forcibly adding $target to git index"
+        echo "[INFO] Adding $target to git index"
         git add --force -- "$target" 2>/dev/null || true
       fi
     fi
